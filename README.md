@@ -16,47 +16,47 @@
 
 ​	项目的全部代码存放在client,common,database,protocol,server这5个目录下，doc用来存放一些文档信息。接下来将逐一对存放代码的5个目录进行介绍。
 
-![图2-1](C:\Users\LXB11\Desktop\图2-1.png)
+![图2-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-1.png)
 
 ​	protocol目录下主要是一个user_info.protoc文件和几个由它编译生成的文件（内含Makefile）。		 	protoc文件中定义了如上图（图2-1）的请求和返回信息，上图展示的是登录的请求和返回信息（注册和测试类似，不再展示），登录需要用户名和密码，服务器返回的信息包括返回码，返回字符串和token信息。
 
 ​	同时还定义了三个rpc服务，分别对应登录，注册，测试，如下图所示（图2-2）：
 
-![图2-2](C:\Users\LXB11\Desktop\图2-2.png)
+![图2-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-2.png)
 
 ​	
 
 ​	database目录：主要是封装了sqlite数据库的操作和一个状态类。
 
-![图2-3](C:\Users\LXB11\Desktop\图2-3.png)
+![图2-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-3.png)
 
 ​	上图（图2-3）展示的是状态类的封装，该类的主要目的是返回数据库操作的状态。
 
 ​	下图（图2-4）展示的对数据库操作的封装。
 
-![图2-4](C:\Users\LXB11\Desktop\图2-4.png)
+![图2-4](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-4.png)
 
 
 
 ​	common目录主要是定义了一些工具类。例如MD5加密算法的头文件和实现，function.h中定义了一个uuid转字符串的函数（以后如果项目有了扩展，类似的函数也可以放在这个文件中），log.h中定义了一个简单的输出日志，flags.h中定义了一个表示数据库位置的常量。以上文件均不用图片展示。action.h中（图2-5）中定义了一个客户端行为的状态类，用于返回客户端操作的状态。该类的实现类似于database目录下的数据库状态类。
 
-![图2-5](C:\Users\LXB11\Desktop\图2-5.png)
+![图2-5](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-5.png)
 
 ​	client目录下定义了客户端的相关操作。token也存储在client类中（图2-6）。
 
-![图2-6](C:\Users\LXB11\Desktop\图2-6.png)
+![图2-6](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-6.png)
 
 ​	server目录下定义了三个rpc服务的具体实现（图2-7）。
 
-![图2-7](C:\Users\LXB11\Desktop\图2-7.png)
+![图2-7](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-7.png)
 
 
 
 # RoadMap
 
-​	1：可以使用SSL/TLS 并对服务端授权所使用的 SSL/TLS 进行了改良，对客户端和服务端交换的所有数据进行了加密。（未实现）
+​	1：使用SSL/TLS 对客户端和服务端交换的所有数据进行了加密。（未实现）
 
-​	2：如果用户注册不仅仅需要用户名和密码，还需要一些其他的信息（例如：邮箱，性别），我们可以.protoc文件中定义一个UserBaseInfo的message，登录和注册的message中均包含UserBaseInfo（注册可以继续增加相应的字段）。
+​	2:
 
 # 安装构建
 
@@ -72,45 +72,48 @@
 sudo apt-get install sqlite3
 ```
 
+  4：建立用户信息表
+  
+  
 ​	3:接下来依次在protocol目录，client目录，server目录中输入make命令即可完成编译。
 
 # 运行截图
 
 ​	首先。我们运行服务器，运行结果如图5-1所示。
 
-![图5-1](C:\Users\LXB11\Desktop\图5-1.png)
+![图5-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-1.png)
 
 ​	接下来，我们运行客户端。运行结果如图5-2所示。
 
-![图5-2](C:\Users\LXB11\Desktop\图5-2.png)
+![图5-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-2.png)
 
 ​	当我们在注册账号的过程中，两次的输入密码不相同的时候，会看到图5-3的运行结果。
 
-![图5-3](C:\Users\LXB11\Desktop\图5-3.png)
+![图5-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-3.png)
 
 ​	如果我们两次密码输入相同，并且该用户名没有被注册过的话，我们会注册成功，如图5-4所示。
 
-![图5-4](C:\Users\LXB11\Desktop\图5-4.png)
+![图5-4](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-4.png)
 
 ​	当我们试图注册一个已经被注册过的用户名时，运行结果如图5-5所示。
 
-![图5-5](C:\Users\LXB11\Desktop\图5-5.png)
+![图5-5](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-5.png)
 
 ​	登录时，当我们输入错密码的时候，运行结果如图5-6所示。
 
-![图5-6](C:\Users\LXB11\Desktop\图5-6.png)
+![图5-6](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-6.png)
 
 ​	登录的用户名和密码都正确的时候，运行结果如图5-7所示。
 
-![图5-7](C:\Users\LXB11\Desktop\图5-7.png)
+![图5-7](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-7.png)
 
 ​	登陆成功后（登陆成功后才会返回正确的token），我们进行测试（模拟用户登录成功后的各种操作），运行结果如图5-8所示。
 
-![图5-8](C:\Users\LXB11\Desktop\图5-8.png)
+![图5-8](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-8.png)
 
 ​	接下来我们重新开一个终端，模拟另一个用户登录的情形，在另一个用户登陆成功之后，对上一个终端的用户再次执行测试（它的token信息已经失效），运行结果如图5-9所示。
 
-![图5-9](C:\Users\LXB11\Desktop\图5-9.png)
+![图5-9](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-9.png)
 
 
 
