@@ -60,58 +60,60 @@
 
 # 安装构建
 
-​	1：grpc安装（参照官网）
++ grpc安装（参照官网）
+  https://grpc.io/docs/quickstart/cpp.html
 
-​	https://grpc.io/docs/quickstart/cpp.html
++ install sqlite3, uuid_dev
 
-​	2：sqlite安装
-
-​	在终端中输入：
-
-```c++
+```bash
 sudo apt-get install sqlite3
+sudo apt-get install uuid-dev
 ```
 
-  4：建立用户信息表
-  
-  
-​	3:接下来依次在protocol目录，client目录，server目录中输入make命令即可完成编译。
++ 创建库表
+```sql
+CREATE TABLE USERINFO( 
+  USERNAME CHAR(64) NOT NULL,
+  PASSWORD CHAR(64) NOT NULL,
+  TOKEN CHAR(128) );
+```
++ 在protocol目录，client目录，server目录中输入make命令即可完成编译
 
 # 运行截图
 
-​	首先。我们运行服务器，运行结果如图5-1所示。
++ 首先。我们运行服务器，运行结果如图5-1所示。
 
 ![图5-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-1.png)
 
-​	接下来，我们运行客户端。运行结果如图5-2所示。
++ 接下来，我们运行客户端。运行结果如图5-2所示。
 
 ![图5-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-2.png)
 
-​	当我们在注册账号的过程中，两次的输入密码不相同的时候，会看到图5-3的运行结果。
++ 当我们在注册账号的过程中，两次的输入密码不相同的时候，会看到图5-3的运行结果。
 
 ![图5-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-3.png)
 
-​	如果我们两次密码输入相同，并且该用户名没有被注册过的话，我们会注册成功，如图5-4所示。
++ 如果我们两次密码输入相同，并且该用户名没有被注册过的话，我们会注册成功，如图5-4所示。
 
 ![图5-4](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-4.png)
 
-​	当我们试图注册一个已经被注册过的用户名时，运行结果如图5-5所示。
++ 当我们试图注册一个已经被注册过的用户名时，运行结果如图5-5所示。
 
 ![图5-5](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-5.png)
 
-​	登录时，当我们输入错密码的时候，运行结果如图5-6所示。
++ 登录时，当我们输入错密码的时候，运行结果如图5-6所示。
 
 ![图5-6](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-6.png)
 
-​	登录的用户名和密码都正确的时候，运行结果如图5-7所示。
++ 登录的用户名和密码都正确的时候，运行结果如图5-7所示。
 
 ![图5-7](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-7.png)
 
-​	登陆成功后（登陆成功后才会返回正确的token），我们进行测试（模拟用户登录成功后的各种操作），运行结果如图5-8所示。
++ 登陆成功后（登陆成功后才会返回正确的token），我们进行测试（模拟用户登录成功后的各种操作），运行结果如图5-8所示。
 
 ![图5-8](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-8.png)
 
-​	接下来我们重新开一个终端，模拟另一个用户登录的情形，在另一个用户登陆成功之后，对上一个终端的用户再次执行测试（它的token信息已经失效），运行结果如图5-9所示。
++ 接下来我们重新开一个终端，模拟另一个用户登录的情形，在另一个用户登陆成功之后，对上一个终端的用户再次执行测试（它的token信息已经失效），运行结果如图5-9所示。
 
 ![图5-9](https://github.com/xiaohan-orange/easylogin/blob/master/doc/5-9.png)
 
