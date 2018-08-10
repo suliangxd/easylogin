@@ -2,6 +2,7 @@
 #include "common/function.h"
 #include "common/flags.h"
 #include "common/log.h"
+#include "common/sha256.h"
 #include "database/sqlite_wrapper.h"
 #include "server/server.h"
 
@@ -51,7 +52,7 @@ Status ServiceImpl::Login(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    string password = request->password();
+    string password = hash256_hex_string(request->password());
     uuid_t uu;
     uuid_generate(uu);
     string token = uuid_to_string(uu);
@@ -119,7 +120,7 @@ Status ServiceImpl::Register(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    string password = request->password();
+    string password = hash256_hex_string(request->password());
     uuid_t uu;
     uuid_generate(uu);
     string token = uuid_to_string(uu);
