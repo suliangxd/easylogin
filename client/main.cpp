@@ -28,8 +28,6 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
         string str;
         getline(std::cin, str);
-        // Client client(grpc::CreateChannel("localhost:50051", 
-                    // grpc::SslCredentials(grpc::SslCredentialsOptions())));
         if (str == LOG)
         {
             client.Login();

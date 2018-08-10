@@ -1,5 +1,5 @@
 client:user_info.pb.o user_info.grpc.pb.o md5.o main.o client.o
-	g++ -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1 user_info.pb.o user_info.grpc.pb.o md5.o client.o main.o -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o client -l sqlite3
+	g++ -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1 user_info.pb.o user_info.grpc.pb.o md5.o client.o main.o -L/usr/local/lib `pkg-config --libs protobuf grpc++ grpc` -Wl,--no-as-needed -lgrpc++_reflection -Wl,--as-needed -ldl -o client
 user_info.pb.o:
 	g++ -std=c++11 -D_GLIBCXX_USE_CXX11_ABI=1 `pkg-config --cflags protobuf grpc` -c -o user_info.pb.o ../protocol/user_info.pb.cc
 user_info.grpc.pb.o:
