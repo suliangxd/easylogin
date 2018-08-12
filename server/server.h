@@ -1,10 +1,12 @@
 #ifndef EASYLOGIN_SERVER_SERVER_H
 #define EASYLOGIN_SERVER_SERVER_H
 
-#include <grpcpp/grpcpp.h>
 #include <memory>
 #include <string>
 
+#include <grpcpp/grpcpp.h>
+
+#include "common/action_status.h"
 #include "protocol/user_info.grpc.pb.h"
 
 using grpc::Server;
@@ -18,6 +20,7 @@ using userinfo::RegisterResponse;
 using userinfo::TestRequest;
 using userinfo::TestResponse;
 using userinfo::UserAction;
+using namespace easylogin::common;
 
 namespace easylogin
 {
@@ -25,6 +28,7 @@ namespace server
 {
 class ServiceImpl final : public UserAction::Service
 {
+private:
     Status Login(ServerContext* context, const LoginRequest* request,
             LoginResponse* response) override;
 
@@ -33,6 +37,9 @@ class ServiceImpl final : public UserAction::Service
 
     Status Test(ServerContext* context, const TestRequest* request,
             TestResponse* response) override;
+    
+    template<typename T>   
+    void finish(ActionStatus status, T response);
 };
 
 }  // namespace server 

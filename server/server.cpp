@@ -1,4 +1,3 @@
-#include "common/action_status.h"
 #include "common/function.h"
 #include "common/flags.h"
 #include "common/log.h"
@@ -27,14 +26,12 @@ namespace easylogin
 {
 namespace server
 {
-static string uuid_to_string(const uuid_t uu)
+
+template<typename T>
+void ServiceImpl::finish(ActionStatus status, T response)
 {
-    char str[50];
-    for (int i = 0; i < 16; i++)
-    {
-        sprintf(str + i * 2, "%02X", uu[i]);
-    }
-    return str;
+    response->set_ret_code(status.GetCode());
+    response->set_ret_msg(status.ToString());
 }
 
 Status ServiceImpl::Login(ServerContext* context,
@@ -46,60 +43,70 @@ Status ServiceImpl::Login(ServerContext* context,
     {
         LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
+        mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
     }
     string username = request->username();
     string password = hash256_hex_string(request->password());
-    uuid_t uu;
-    uuid_generate(uu);
-    string token = uuid_to_string(uu);
-    string sql = "SELECT PASSWORD FROM USERINFO WHERE USERNAME = '";
-    sql = sql + username + "'";
-    SqliteWrapper::ResultTable retTable;
-    dbStatus = mySqlite.Select(sql, retTable);
-    if (!dbStatus.IsOk())
+    uuid_t uuid;
+    uuid_generate(uuid);
+    string token = uuid_to_string(uuid);
+    string sql = "SELECT PASSWORD FROM USERINFO WHERE USERNAME = ?";
+    SqliteStatement* stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, username))
     {
-        LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
         mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
     }
-    if (retTable.records_.empty() || retTable.records_[0][0] == "NULL"
-            ||password != retTable.records_[0][0])
+    if(stmt->NextRow())
+    {
+        if(stmt->ValueString(0) != password)
+        {
+            ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
+            mySqlite.Close();
+            finish<LoginResponse*>(actionStatus, response);
+            return Status::OK;
+        }
+    }
+    else
     {
         ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
-        response->set_ret_code(ActionStatus::kIncorrectPassword);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
         mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
     }
-    sql = "UPDATE USERINFO SET TOKEN = '";
-    sql = sql + token + "' WHERE USERNAME = '" + username + "'";
-    dbStatus = mySqlite.Execute(sql);
-    if (!dbStatus.IsOk())
+    sql = "UPDATE USERINFO SET TOKEN = ? WHERE USERNAME = ?";
+    stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, token))
     {
-        LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
         mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
+    }
+    if(!stmt->Bind(1, username))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
+        return Status::OK; 
+    }
+    if(!stmt->Execute())
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
+        return Status::OK; 
     }
     else
     {
         ActionStatus actionStatus(ActionStatus::kOk);
-        response->set_ret_code(ActionStatus::kOk);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(token);
         mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
+        response->set_token(token);
         return Status::OK;
     }
 }
@@ -113,61 +120,67 @@ Status ServiceImpl::Register(ServerContext* context,
     {
         LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
+        finish<RegisterResponse*>(actionStatus, response);
         mySqlite.Close();
         return Status::OK;
     }
     string username = request->username();
     string password = hash256_hex_string(request->password());
-    uuid_t uu;
-    uuid_generate(uu);
-    string token = uuid_to_string(uu);
-    string sql = "SELECT USERNAME FROM USERINFO WHERE USERNAME = '";
-    sql = sql + username + "'";
-    SqliteWrapper::ResultTable retTable;
-    dbStatus = mySqlite.Select(sql, retTable);
-    if (!dbStatus.IsOk())
+    uuid_t uuid;
+    uuid_generate(uuid);
+    string token = uuid_to_string(uuid);
+    string sql = "SELECT USERNAME FROM USERINFO WHERE USERNAME = ?";
+    SqliteStatement* stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, username))
     {
-        LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
         mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    if (retTable.records_.empty() || retTable.records_[0][0] == "NULL")
+    if(stmt->NextRow())
     {
-        sql = "INSERT INTO USERINFO (USERNAME, PASSWORD, TOKEN)"\
-                "VALUES ('";
-        sql = sql + username + "', '" + password + "', '" + token + "')";
-        dbStatus = mySqlite.Execute(sql);
-        if (!dbStatus.IsOk())
-        {
-            LOG_ERROR(dbStatus.ToString().c_str());
-            ActionStatus actionStatus(ActionStatus::kDatabaseError);
-            response->set_ret_code(ActionStatus::kDatabaseError);
-            response->set_ret_msg(actionStatus.ToString());
-            response->set_token(actionStatus.ToString());
-            mySqlite.Close();
-            return Status::OK;
-        }
-        ActionStatus actionStatus(ActionStatus::kOk);
-        response->set_ret_code(ActionStatus::kOk);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(token);
+        ActionStatus actionStatus(ActionStatus::kUsernameUsed);
         mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
+    }
+    sql = "INSERT INTO USERINFO(USERNAME, PASSWORD, TOKEN) VALUES(?,?,?)";
+    stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, username))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    if(!stmt->Bind(1, password))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    if(!stmt->Bind(2, token))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    if(!stmt->Execute())
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        return Status::OK; 
     }
     else
     {
-        ActionStatus actionStatus(ActionStatus::kUsernameUsed);
-        response->set_ret_code(ActionStatus::kUsernameUsed);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_token(actionStatus.ToString());
+        ActionStatus actionStatus(ActionStatus::kOk);
         mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        response->set_token(token);
         return Status::OK;
     }
 }
@@ -181,44 +194,37 @@ Status ServiceImpl::Test(ServerContext* context,
     {
         LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_ret_str(actionStatus.ToString());
         mySqlite.Close();
+        finish<TestResponse*>(actionStatus, response);
+        response->set_ret_str(actionStatus.ToString());
         return Status::OK;
     }
     string token = request->token();
-    string sql = "SELECT USERNAME FROM USERINFO WHERE TOKEN = '";
-    sql = sql + token + "'";
-    SqliteWrapper::ResultTable retTable;
-    dbStatus = mySqlite.Select(sql, retTable);
-    if (!dbStatus.IsOk())
+    string sql = "SELECT USERNAME FROM USERINFO WHERE TOKEN = ?";
+    SqliteStatement* stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, token))
     {
-        LOG_ERROR(dbStatus.ToString().c_str());
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        response->set_ret_code(ActionStatus::kDatabaseError);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_ret_str(actionStatus.ToString());
         mySqlite.Close();
+        finish<TestResponse*>(actionStatus, response);
+        response->set_ret_str(actionStatus.ToString());
         return Status::OK;
     }
-    else if (retTable.records_.empty()|| retTable.records_[0][0] == "NULL")
+    if(!stmt->NextRow())
     {
         ActionStatus actionStatus(ActionStatus::kInvalidToken);
-        response->set_ret_code(ActionStatus::kInvalidToken);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_ret_str(actionStatus.ToString());
         mySqlite.Close();
+        finish<TestResponse*>(actionStatus, response);
+        response->set_ret_str(actionStatus.ToString());
         return Status::OK;
     }
     else
     {
         string str = request->test_string();
         ActionStatus actionStatus(ActionStatus::kOk);
-        response->set_ret_code(ActionStatus::kOk);
-        response->set_ret_msg(actionStatus.ToString());
-        response->set_ret_str(HELLO + str);
         mySqlite.Close();
+        finish<TestResponse*>(actionStatus, response);
+        response->set_ret_str(HELLO + str);
         return Status::OK;
     }
 }
