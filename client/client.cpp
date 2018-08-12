@@ -19,10 +19,7 @@ using userinfo::TestRequest;
 using userinfo::TestResponse;
 using userinfo::UserAction;
 
-using std::cin;
-using std::cout;
-using std::endl;
-using std::string;
+using namespace std;
 
 using namespace easylogin::common;
 
@@ -73,6 +70,7 @@ void Client::Register()
     if (password1 != password2)
     {
         cout << PASS << endl;
+        return;
     }
     RegisterRequest request;
     password1 = MD5(password1).toStr();
