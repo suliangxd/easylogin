@@ -39,6 +39,28 @@ private:
     string msg_;
 };
 
+class SqliteStatement
+{
+private:
+    friend class SqliteWrapper;
+    SqliteStatement(const string& statement, sqlite3* db);
+public:
+    SqliteStatement();
+    ~SqliteStatement();
+    
+    string ValueString(int pos_zero_indexed);
+    bool Bind(int pos_zero_indexed, const string& value);
+    bool Bind(int pos_zero_indexed, double value);
+    bool Bind(int pos_zero_indexed, int value);
+
+    bool Execute();
+    bool NextRow();
+    bool Reset();
+    bool RestartSelect();
+private:
+    sqlite3_stmt* stmt_;
+};
+
 class SqliteWrapper
 {
 public:
@@ -59,8 +81,10 @@ public:
 
     DbStatus Select(const string& sql, ResultTable& res);
     DbStatus Execute(const string& sql);
+    SqliteStatement* Statement(const string& stmt);
 private:
     sqlite3* db_;
+    SqliteStatement* statment_;
 	static int selectCallback(void *data, int numFields, 
             char **fields, char **colNames);
 };

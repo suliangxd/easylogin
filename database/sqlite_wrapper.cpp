@@ -37,11 +37,16 @@ string DbStatus::ToString() const
     return ss.str();
 }
 
-SqliteWrapper::SqliteWrapper() : db_(NULL) {}
+SqliteWrapper::SqliteWrapper() : db_(NULL), statment_(NULL){}
 
 SqliteWrapper::~SqliteWrapper()
 {
-    if (db_)
+    if (statment_)
+    {
+        delete statment_;
+        statment_ = NULL;
+    }
+   if (db_)
     {
         sqlite3_close(db_);
         db_ = NULL;
@@ -121,5 +126,127 @@ int SqliteWrapper::selectCallback(void *data,
   return 0;
 }
 
+SqliteStatement* SqliteWrapper::Statement(const string& statement)
+{
+    if (statment_)
+    {
+        delete statment_;
+        statment_ = NULL;
+    }
+    SqliteStatement* stmt;
+    try
+    {
+        stmt = new SqliteStatement(statement, db_);
+        statment_ = stmt;
+        return stmt;
+    }
+    catch(const char* e)
+    {
+        return 0;
+    }
+}
+
+SqliteStatement::SqliteStatement(const string& statement, sqlite3* db)
+{
+    if(sqlite3_prepare(db, statement.c_str(), -1, &stmt_, 0) != SQLITE_OK)
+    {
+        throw sqlite3_errmsg(db);
+    }
+    if(!stmt_)
+    {
+        throw "stmt_ is 0";
+    }
+}
+
+SqliteStatement::~SqliteStatement()
+{
+    if(stmt_)
+    {
+        sqlite3_finalize(stmt_);
+    }
+}
+
+SqliteStatement::SqliteStatement():stmt_(0){}
+
+bool SqliteStatement::Bind(int pos_zero_indexed, const string& value)
+{
+    if(sqlite3_bind_text(stmt_, pos_zero_indexed + 1, value.c_str(),
+                value.length(), SQLITE_TRANSIENT) != SQLITE_OK)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool SqliteStatement::Bind(int pos_zero_indexed, double value)
+{
+    if(sqlite3_bind_double(stmt_, pos_zero_indexed + 1, value) != SQLITE_OK)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool SqliteStatement::Bind(int pos_zero_indexed, int value)
+{
+    if(sqlite3_bind_int(stmt_, pos_zero_indexed + 1, value) != SQLITE_OK)
+    {
+        return false;
+    }
+    return true;
+}
+
+bool SqliteStatement::Execute()
+{
+    int rc = sqlite3_step(stmt_);
+    if(rc == SQLITE_BUSY || rc == SQLITE_ERROR || rc == SQLITE_MISUSE
+            || rc != SQLITE_DONE)
+    {
+        return false;
+    }
+    sqlite3_reset(stmt_);
+    return true;
+}
+
+bool SqliteStatement::Reset()
+{
+    int rc = sqlite3_step(stmt_);
+    sqlite3_reset(stmt_);
+    if(rc == SQLITE_ROW)
+    {
+        return true;
+    }
+    return false;
+}
+
+bool SqliteStatement::NextRow()
+{
+    int rc = sqlite3_step(stmt_);
+    if(rc == SQLITE_ROW)
+    {
+        return true;
+    }
+    if(rc == SQLITE_DONE)
+    {
+        sqlite3_reset(stmt_);
+        return false;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool SqliteStatement::RestartSelect()
+{
+    sqlite3_reset(stmt_);
+    return true;
+}
+
+string SqliteStatement::ValueString(int pos_zero_indexed)
+{
+    return string(reinterpret_cast<const char*>
+            (sqlite3_column_text(stmt_, pos_zero_indexed)));
+}
 }  // namespace database
 }  // namespace easylogin
