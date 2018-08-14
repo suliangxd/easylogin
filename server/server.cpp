@@ -1,3 +1,4 @@
+#include <iostream>
 #include "common/function.h"
 #include "common/flags.h"
 #include "common/log.h"
@@ -19,6 +20,7 @@ using userinfo::UserAction;
 
 using namespace easylogin::common;
 using namespace easylogin::database;
+using namespace std;
 
 const static std::string HELLO = "Hello ";
 
@@ -48,12 +50,45 @@ Status ServiceImpl::Login(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    string password = hash256_hex_string(request->password());
+    // string password = hash256_hex_string(request->password());
+    string salt;
+    string password = request->password();
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
-    string sql = "SELECT PASSWORD FROM USERINFO WHERE USERNAME = ?";
+    string sql = "SELECT SALT FROM USERINFO WHERE USERNAME = ?";
     SqliteStatement* stmt = mySqlite.Statement(sql);
+    if(!stmt->Bind(0, username))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    if(stmt->NextRow())
+    {
+        salt = stmt->ValueString(0);
+        /*
+        if(stmt->ValueString(0) != password)
+        {
+            ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
+            mySqlite.Close();
+            finish<LoginResponse*>(actionStatus, response);
+            return Status::OK;
+        }*/
+    }
+    else
+    {
+        ActionStatus actionStatus
+            (ActionStatus::kIncorrectUsernameOrPassword);
+        mySqlite.Close();
+        finish<LoginResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    password += salt;
+    password = hash256_hex_string(password);
+    sql = "SELECT PASSWORD FROM USERINFO WHERE USERNAME = ?";
+    stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))
     {
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
@@ -65,7 +100,8 @@ Status ServiceImpl::Login(ServerContext* context,
     {
         if(stmt->ValueString(0) != password)
         {
-            ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
+            ActionStatus actionStatus
+                (ActionStatus::kIncorrectUsernameOrPassword);
             mySqlite.Close();
             finish<LoginResponse*>(actionStatus, response);
             return Status::OK;
@@ -73,10 +109,12 @@ Status ServiceImpl::Login(ServerContext* context,
     }
     else
     {
-        ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
+        ActionStatus actionStatus
+            (ActionStatus::kIncorrectUsernameOrPassword);
         mySqlite.Close();
         finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
+    
     }
     sql = "UPDATE USERINFO SET TOKEN = ? WHERE USERNAME = ?";
     stmt = mySqlite.Statement(sql);
@@ -125,7 +163,13 @@ Status ServiceImpl::Register(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    string password = hash256_hex_string(request->password());
+    uuid_t uuidSalt;
+    uuid_generate(uuidSalt);
+    string salt = uuid_to_string(uuidSalt);
+    string password = request->password();
+    password += salt;
+    password = hash256_hex_string(password);
+    // string password = hash256_hex_string(request->password());
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
@@ -145,7 +189,8 @@ Status ServiceImpl::Register(ServerContext* context,
         finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    sql = "INSERT INTO USERINFO(USERNAME, PASSWORD, TOKEN) VALUES(?,?,?)";
+    sql = "INSERT INTO USERINFO(USERNAME, PASSWORD, SALT, TOKEN)"\
+           "VALUES(?,?,?,?)";
     stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))
     {
@@ -161,7 +206,14 @@ Status ServiceImpl::Register(ServerContext* context,
         finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    if(!stmt->Bind(2, token))
+    if(!stmt->Bind(2, salt))
+    {
+        ActionStatus actionStatus(ActionStatus::kDatabaseError);
+        mySqlite.Close();
+        finish<RegisterResponse*>(actionStatus, response);
+        return Status::OK;
+    }
+    if(!stmt->Bind(3, token))
     {
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
         mySqlite.Close();
