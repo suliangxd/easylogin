@@ -1,4 +1,3 @@
-#include <iostream>
 #include "common/function.h"
 #include "common/flags.h"
 #include "common/log.h"
@@ -20,7 +19,6 @@ using userinfo::UserAction;
 
 using namespace easylogin::common;
 using namespace easylogin::database;
-using namespace std;
 
 const static std::string HELLO = "Hello ";
 
@@ -50,7 +48,6 @@ Status ServiceImpl::Login(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    // string password = hash256_hex_string(request->password());
     string salt;
     string password = request->password();
     uuid_t uuid;
@@ -68,14 +65,6 @@ Status ServiceImpl::Login(ServerContext* context,
     if(stmt->NextRow())
     {
         salt = stmt->ValueString(0);
-        /*
-        if(stmt->ValueString(0) != password)
-        {
-            ActionStatus actionStatus(ActionStatus::kIncorrectPassword);
-            mySqlite.Close();
-            finish<LoginResponse*>(actionStatus, response);
-            return Status::OK;
-        }*/
     }
     else
     {
@@ -169,7 +158,6 @@ Status ServiceImpl::Register(ServerContext* context,
     string password = request->password();
     password += salt;
     password = hash256_hex_string(password);
-    // string password = hash256_hex_string(request->password());
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
