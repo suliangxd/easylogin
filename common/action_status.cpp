@@ -18,8 +18,8 @@ string ActionStatus::ToString() const
         case ActionStatus::kDatabaseError:
             ss << "Database Error";
             break;
-        case ActionStatus::kIncorrectPassword:
-            ss << "Please Enter Correct Password";
+        case ActionStatus::kIncorrectUsernameOrPassword:
+            ss << "Incorrect Username or Password";
             break;
         case ActionStatus::kUsernameUsed:
             ss << "The Username Has Been Registered";
@@ -37,6 +37,7 @@ string ActionStatus::ToString() const
     }
     return ss.str();
 }
+
 
 }  // namespace common
 }  // namespace easylogin

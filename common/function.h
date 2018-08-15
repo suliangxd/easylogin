@@ -1,7 +1,10 @@
 #ifndef EASYLOGIN_COMMON_FUNCTION_H
 #define EASYLOGIN_COMMON_FUNCTION_H
 
+#include <string>
 #include <uuid/uuid.h>
+
+using std::string;
 
 namespace easylogin
 {

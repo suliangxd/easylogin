@@ -17,7 +17,7 @@ public:
     {
         kOk = 0,
         kDatabaseError,
-        kIncorrectPassword,
+        kIncorrectUsernameOrPassword,
         kUsernameUsed,
         kInvalidToken,
         kUnknowError
@@ -27,6 +27,8 @@ public:
     ~ActionStatus() {};
 
     string ToString() const;
+
+    Code GetCode() const;
 private:
     Code code_;
     string msg_;
@@ -36,6 +38,11 @@ inline ActionStatus::ActionStatus(Code code) : code_(code) {}
 
 inline ActionStatus::ActionStatus(Code code, string msg) :
     code_(code), msg_(msg) {}
+
+inline ActionStatus::Code ActionStatus::GetCode() const
+{
+    return code_;
+}
 
 }  // namespace common
 }  // namespace easylogin
