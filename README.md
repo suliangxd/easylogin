@@ -155,6 +155,15 @@
 ![图2-7](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-7.png)
 
 
+## 数据库表格
+
+### USERINFO表
+字段 | 字段名 | 类型 | 可空 
+---- | ---- | ---- | ---- 
+用户名 | USERNAME | CHAR(128) | NOT NULL  
+密码 | PASSWORD | CHAR(512) | NOT NULL  
+盐 | SALT | CHAR（256） | NOT NULL  
+token | TOKEN | CHAR(256) | NOT NULL  
 
 ## RoadMap
 ### todo list
