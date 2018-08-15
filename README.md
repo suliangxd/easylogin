@@ -83,7 +83,8 @@ CREATE TABLE USERINFO(
 
 ## 运行截图
 
-[运行截图]（https://github.com/xiaohan-orange/easylogin/blob/master/doc/runScreenshot.md）
+运行截图
+https://github.com/xiaohan-orange/easylogin/blob/master/doc/runScreenshot.md
 
 
 
