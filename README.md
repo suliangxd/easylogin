@@ -39,85 +39,85 @@
 
 ## 代码结构
 
-
+``` c++
 ├── README.md  // 文档  
 
 ├── WORKSPACE  		  
 
 ├── client // 客户端代码      
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── BUILD	  
+│    ├── BUILD	  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── Makefile   
+│    ├── Makefile   
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── client.cpp  
+│    ├── client.cpp  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── client.h  
+│    ├── client.h  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;└── main.cpp  
+│    └── main.cpp  
 
 ├── common  // 公共函数  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── test   
+│    ├── test   
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── BUILD  
+│    ├── BUILD  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── action_status.cpp    
+│    ├── action_status.cpp    
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── action_status.h  // 操作返回状态  
+│    ├── action_status.h  // 操作返回状态  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── flags.h  // flags  
+│    ├── flags.h  // flags  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── function.h  // 公共函数  
+│    ├── function.h  // 公共函数  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── log.h  // 日志  
+│    ├── log.h  // 日志  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── md5.cpp  
+│    ├── md5.cpp  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── md5.h // md5加密算法  
+│    ├── md5.h // md5加密算法  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;└── sha256.h // sha256加密算法  
+│    └── sha256.h // sha256加密算法  
 
 ├── database  //数据库封装  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── test  
+│    ├── test  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── BUILD  
+│    ├── BUILD  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── sqlite_wrapper.cpp  
+│    ├── sqlite_wrapper.cpp  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;└── sqlite_wrapper.h  
+│    └── sqlite_wrapper.h  
 
 ├── doc  // 文档及图片  
 
 ├── proto  // protobuf文件  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── BUILD  
+│    ├── BUILD  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── Makefile  
+│    ├── Makefile  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── user_info.grpc.pb.cc  
+│    ├── user_info.grpc.pb.cc  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── user_info.grpc.pb.h  
+│    ├── user_info.grpc.pb.h  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;├── user_info.pb.cc  
+│    ├── user_info.pb.cc  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── user_info.pb.h  
+│    ├── user_info.pb.h  
 
-│&nbsp;&nbsp;&nbsp;&nbsp;└── user_info.proto   
+│    └── user_info.proto   
 
 └── server  // 服务器端代码  
 
-|&nbsp;&nbsp;&nbsp;&nbsp;├── BUILD  
+│    ├── BUILD  
     
-|&nbsp;&nbsp;&nbsp;&nbsp;|── Makefile  
+│    |── Makefile  
     
-|&nbsp;&nbsp;&nbsp;&nbsp;├── main.cpp  
+│    ├── main.cpp  
     
-|&nbsp;&nbsp;&nbsp;&nbsp;├── server.cpp  
+│    ├── server.cpp  
     
-|&nbsp;&nbsp;&nbsp;&nbsp;└── server.h
-
+│    └── server.h
+```
 
 
 ![图2-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-1.png)
