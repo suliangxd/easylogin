@@ -7,7 +7,7 @@
 ## 运行流程
 **注册**  
 
-![flowchart-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-1.png)
+![flowchart-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-4.png)
 
 1：输入用户名和密码（两次）。  
 
@@ -23,7 +23,7 @@
 
 **登录**  
 
-![flowchart-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-2.png)
+![flowchart-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-5.png)
 
 1：输入用户名和密码。  
 
@@ -37,7 +37,7 @@
 
 **单点登录检测**  
 
-![flowchart-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-3.png)
+![flowchart-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-6.png)
 
 1：服务器查询已登录用户的token值是否失效。  
 
@@ -50,92 +50,39 @@
 
 ├── WORKSPACE  		  
 
-├── client // 客户端代码      
+├── client // 客户端代码       
 
-│    ├── BUILD	  
+├── common  // 公共函数   
 
-│    ├── Makefile   
-
-│    ├── client.cpp  
-
-│    ├── client.h  
-
-│    └── main.cpp  
-
-├── common  // 公共函数  
-
-│    ├── test   
-
-│    ├── BUILD  
-
-│    ├── action_status.cpp    
-
-│    ├── action_status.h  // 操作返回状态  
-
-│    ├── flags.h  // flags  
-
-│    ├── function.h  // 公共函数  
-
-│    ├── log.h  // 日志  
-
-│    ├── md5.cpp  
-
-│    ├── md5.h // md5加密算法  
-
-│    └── sha256.h // sha256加密算法  
-
-├── database  //数据库封装  
-
-│    ├── test  
-
-│    ├── BUILD  
-
-│    ├── sqlite_wrapper.cpp  
-
-│    └── sqlite_wrapper.h  
+├── database  //数据库封装   
 
 ├── doc  // 文档及图片  
 
-├── proto  // protobuf文件  
-
-│    ├── BUILD  
-
-│    ├── Makefile  
-
-│    ├── user_info.grpc.pb.cc  
-
-│    ├── user_info.grpc.pb.h  
-
-│    ├── user_info.pb.cc  
-
-│    ├── user_info.pb.h  
-
-│    └── user_info.proto   
+├── proto  // protobuf文件    
 
 └── server  // 服务器端代码  
 
-│    ├── BUILD  
-    
-│    |── Makefile  
-    
-│    ├── main.cpp  
-    
-│    ├── server.cpp  
-    
-│    └── server.h
 ```
 
 
-## 数据库表格
+## 数据库
 
 ### USERINFO表
 字段 | 字段名 | 类型 | 可空 
 ---- | ---- | ---- | ---- 
 用户名 | USERNAME | CHAR(128) | NOT NULL  
 密码 | PASSWORD | CHAR(512) | NOT NULL  
-盐 | SALT | CHAR（256） | NOT NULL  
+盐 | SALT | CHAR（256）| NOT NULL  
 token | TOKEN | CHAR(256) | NOT NULL  
 
+```sql
+CREATE TABLE USERINFO( 
+  USERNAME CHAR(128) NOT NULL,
+  PASSWORD CHAR(512) NOT NULL,
+  SALT CHAR(256) NOT NULL
+  TOKEN CHAR(128) NOT NULL
+  );
+```
 ## RoadMap
 ### todo list
 - [ ] grpc调用使用SSL/TLS
@@ -156,18 +103,14 @@ sudo apt-get install uuid-dev
 ```
 
 + 创建库表
-```sql
-CREATE TABLE USERINFO( 
-  USERNAME CHAR(64) NOT NULL,
-  PASSWORD CHAR(64) NOT NULL,
-  TOKEN CHAR(128) );
-```
+
 + 在protocol目录，client目录，server目录中输入make命令即可完成编译
 
 ## 运行截图
 
-运行截图
-https://github.com/xiaohan-orange/easylogin/blob/master/doc/runScreenshot.md
+[运行截图](https://github.com/xiaohan-orange/easylogin/blob/master/doc/runScreenshot.md)  
+
+
 
 
 
