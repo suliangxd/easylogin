@@ -72,7 +72,7 @@
 ---- | ---- | ---- | ---- 
 用户名 | USERNAME | CHAR(128) | NOT NULL  
 密码 | PASSWORD | CHAR(512) | NOT NULL  
-盐 | SALT | CHAR（256）| NOT NULL  
+盐 | SALT | CHAR(256)| NOT NULL  
 token | TOKEN | CHAR(256) | NOT NULL  
 
 ```sql
@@ -101,8 +101,13 @@ CREATE TABLE USERINFO(
 sudo apt-get install sqlite3
 sudo apt-get install uuid-dev
 ```
-
-+ 创建库表
+##Bazel构建
+``` c++  
+cd easylogin/client
+bazel build //client:client-bin
+cd ../server
+bazel build //server:server-bin
+```
 
 + 在protocol目录，client目录，server目录中输入make命令即可完成编译
 
