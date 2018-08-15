@@ -39,8 +39,85 @@
 
 ## 代码结构
 
+├── README.md  // 文档  
 
-	项目的全部代码存放在client,common,database,protocol,server这5个目录下，doc用来存放一些文档信息
+├── WORKSPACE  		  
+
+├── client // 客户端代码      
+
+│      ├── BUILD	  
+
+│      ├── Makefile   
+
+|      ├── client.cpp  
+
+|      ├── client.h  
+
+│      └── main.cpp  
+
+├── common  // 公共函数  
+
+|      ├── test   
+
+│      ├── BUILD  
+
+│      ├── action_status.cpp    
+
+|      ├── action_status.h  // 操作返回状态  
+
+|      ├── flags.h  // flags  
+
+│      ├── function.h  // 公共函数  
+
+│      ├── log.h  // 日志  
+
+|      ├── md5.cpp  
+
+│      ├── md5.h // md5加密算法  
+
+│      └── sha256.h // sha256加密算法  
+
+├── database  //数据库封装  
+
+│      ├── test  
+
+│      ├── BUILD  
+
+│      ├── sqlite_wrapper.cpp  
+
+│      └── sqlite_wrapper.h  
+
+├── doc  // 文档及图片  
+
+├── proto  // protobuf文件  
+
+│      ├── BUILD  
+
+|      ├── Makefile  
+
+|      ├── user_info.grpc.pb.cc  
+
+│      ├── user_info.grpc.pb.h  
+
+│      ├── user_info.pb.cc  
+
+|      ├── user_info.pb.h  
+
+│      └── user_info.proto   
+
+└── server  // 服务器端代码  
+
+|     ├── BUILD  
+    
+|     |── Makefile  
+    
+|     ├── main.cpp  
+    
+|     ├── server.cpp  
+    
+|     └── server.h
+
+
 
 ![图2-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-1.png)
 
