@@ -120,41 +120,6 @@
 ```
 
 
-![图2-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-1.png)
-
-​	protocol目录下主要是一个user_info.protoc文件和几个由它编译生成的文件（内含Makefile）。		 	protoc文件中定义了如上图（图2-1）的请求和返回信息，上图展示的是登录的请求和返回信息（注册和测试类似，不再展示），登录需要用户名和密码，服务器返回的信息包括返回码，返回字符串和token信息。
-
-​	同时还定义了三个rpc服务，分别对应登录，注册，测试，如下图所示（图2-2）：
-
-![图2-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-2.png)
-
-​	
-
-​	database目录：主要是封装了sqlite数据库的操作和一个状态类。
-
-![图2-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-3.png)
-
-​	上图（图2-3）展示的是状态类的封装，该类的主要目的是返回数据库操作的状态。
-
-​	下图（图2-4）展示的对数据库操作的封装。
-
-![图2-4](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-4.png)
-
-
-
-​	common目录主要是定义了一些工具类。例如MD5加密算法的头文件和实现，function.h中定义了一个uuid转字符串的函数（以后如果项目有了扩展，类似的函数也可以放在这个文件中），log.h中定义了一个简单的输出日志，flags.h中定义了一个表示数据库位置的常量。以上文件均不用图片展示。action.h中（图2-5）中定义了一个客户端行为的状态类，用于返回客户端操作的状态。该类的实现类似于database目录下的数据库状态类。
-
-![图2-5](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-5.png)
-
-​	client目录下定义了客户端的相关操作。token也存储在client类中（图2-6）。
-
-![图2-6](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-6.png)
-
-​	server目录下定义了三个rpc服务的具体实现（图2-7）。
-
-![图2-7](https://github.com/xiaohan-orange/easylogin/blob/master/doc/2-7.png)
-
-
 ## 数据库表格
 
 ### USERINFO表
