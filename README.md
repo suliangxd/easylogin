@@ -5,7 +5,9 @@
   基于grpc框架，后端数据使用sqlite存储。提供了注册，登录，单点登录检测（登录成功后自动调用）三个功能。用户登录状态由一个通过uuid生成的token值来维护，每个用户的登录始终只维持最新的一份token。密码在客户端通过MD5加密，传送到服务器之后对其进行加盐二次哈希。同时预防sql注入。
 
 ## 运行流程
-**注册**
+**注册**  
+
+![flowchart-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-1.png)
 
 1：输入用户名和密码（两次）。  
 
@@ -19,7 +21,9 @@
 
 6：注册成功。
 
-**登录**
+**登录**  
+
+![flowchart-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-2.png)
 
 1：输入用户名和密码。  
 
@@ -31,7 +35,9 @@
 
 5：登陆成功。
 
-**单点登录检测**
+**单点登录检测**  
+
+![flowchart-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-3.png)
 
 1：服务器查询已登录用户的token值是否失效。  
 
