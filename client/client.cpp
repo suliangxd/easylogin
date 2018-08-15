@@ -7,16 +7,18 @@
 
 const static string RPC = "PRC failed";
 const static string PASS = "Inconsistent Password";
+const static string OK = "OK";
 
 using grpc::Channel;
 using grpc::ClientContext;
 using grpc::Status;
+using grpc::ClientReader;
 using userinfo::LoginRequest;
 using userinfo::LoginResponse;
 using userinfo::RegisterRequest;
 using userinfo::RegisterResponse;
-using userinfo::TestRequest;
-using userinfo::TestResponse;
+using userinfo::SsoRequest;
+using userinfo::SsoResponse;
 using userinfo::UserAction;
 
 using namespace std;
@@ -46,7 +48,11 @@ void Client::Login()
     if (status.ok())
     {
         cout << response.ret_msg() << endl;
-        token_ = response.token();
+        if(response.ret_msg() == OK)
+        {
+            token_ = response.token();
+            Sso();
+        }
     }
     else
     {
@@ -90,20 +96,20 @@ void Client::Register()
     }
 }
 
-void Client::Test()
+void Client::Sso()
 {
-    cout << "Welcode To Test,Please Enter A String." << endl;
-    string  str;
-    cin >> str;
-    TestRequest request;
-    request.set_token(token_);
-    request.set_test_string(str);
-    TestResponse response;
     ClientContext context;
-    Status status = stub_->Test(&context, request, &response);
-    if (status.ok())
+    SsoRequest request;
+    SsoResponse response;
+    request.set_token(token_);
+    std::unique_ptr<ClientReader<SsoResponse> >
+        reader(stub_->Sso(&context, request));
+    while(reader->Read(&response))
+    {}
+    Status status = reader->Finish();
+    if(status.ok())
     {
-        cout << response.ret_str() << endl;
+        cout << response.ret_msg() << endl;
     }
     else
     {
@@ -112,5 +118,6 @@ void Client::Test()
         cout << RPC << endl;
     }
 }
+
 }  // namespace client
 }  // namespace easylogin

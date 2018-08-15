@@ -48,20 +48,24 @@ class UserAction final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::RegisterResponse>> PrepareAsyncRegister(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::RegisterResponse>>(PrepareAsyncRegisterRaw(context, request, cq));
     }
-    virtual ::grpc::Status Test(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::userinfo::TestResponse* response) = 0;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>> AsyncTest(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>>(AsyncTestRaw(context, request, cq));
+    // rpc Test(TestRequest) returns (TestResponse) {}
+    std::unique_ptr< ::grpc::ClientReaderInterface< ::userinfo::SsoResponse>> Sso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReaderInterface< ::userinfo::SsoResponse>>(SsoRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>> PrepareAsyncTest(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>>(PrepareAsyncTestRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>> AsyncSso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>>(AsyncSsoRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>> PrepareAsyncSso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>>(PrepareAsyncSsoRaw(context, request, cq));
     }
   private:
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::LoginResponse>* AsyncLoginRaw(::grpc::ClientContext* context, const ::userinfo::LoginRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::LoginResponse>* PrepareAsyncLoginRaw(::grpc::ClientContext* context, const ::userinfo::LoginRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::RegisterResponse>* AsyncRegisterRaw(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::RegisterResponse>* PrepareAsyncRegisterRaw(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>* AsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) = 0;
-    virtual ::grpc::ClientAsyncResponseReaderInterface< ::userinfo::TestResponse>* PrepareAsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderInterface< ::userinfo::SsoResponse>* SsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>* AsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::userinfo::SsoResponse>* PrepareAsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -80,12 +84,14 @@ class UserAction final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::RegisterResponse>> PrepareAsyncRegister(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::RegisterResponse>>(PrepareAsyncRegisterRaw(context, request, cq));
     }
-    ::grpc::Status Test(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::userinfo::TestResponse* response) override;
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>> AsyncTest(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>>(AsyncTestRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientReader< ::userinfo::SsoResponse>> Sso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request) {
+      return std::unique_ptr< ::grpc::ClientReader< ::userinfo::SsoResponse>>(SsoRaw(context, request));
     }
-    std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>> PrepareAsyncTest(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-      return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>>(PrepareAsyncTestRaw(context, request, cq));
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>> AsyncSso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>>(AsyncSsoRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>> PrepareAsyncSso(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>>(PrepareAsyncSsoRaw(context, request, cq));
     }
 
    private:
@@ -94,11 +100,12 @@ class UserAction final {
     ::grpc::ClientAsyncResponseReader< ::userinfo::LoginResponse>* PrepareAsyncLoginRaw(::grpc::ClientContext* context, const ::userinfo::LoginRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::userinfo::RegisterResponse>* AsyncRegisterRaw(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::userinfo::RegisterResponse>* PrepareAsyncRegisterRaw(::grpc::ClientContext* context, const ::userinfo::RegisterRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>* AsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) override;
-    ::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>* PrepareAsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReader< ::userinfo::SsoResponse>* SsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request) override;
+    ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>* AsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReader< ::userinfo::SsoResponse>* PrepareAsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_Login_;
     const ::grpc::internal::RpcMethod rpcmethod_Register_;
-    const ::grpc::internal::RpcMethod rpcmethod_Test_;
+    const ::grpc::internal::RpcMethod rpcmethod_Sso_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -108,7 +115,8 @@ class UserAction final {
     virtual ~Service();
     virtual ::grpc::Status Login(::grpc::ServerContext* context, const ::userinfo::LoginRequest* request, ::userinfo::LoginResponse* response);
     virtual ::grpc::Status Register(::grpc::ServerContext* context, const ::userinfo::RegisterRequest* request, ::userinfo::RegisterResponse* response);
-    virtual ::grpc::Status Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response);
+    // rpc Test(TestRequest) returns (TestResponse) {}
+    virtual ::grpc::Status Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer);
   };
   template <class BaseClass>
   class WithAsyncMethod_Login : public BaseClass {
@@ -151,26 +159,26 @@ class UserAction final {
     }
   };
   template <class BaseClass>
-  class WithAsyncMethod_Test : public BaseClass {
+  class WithAsyncMethod_Sso : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithAsyncMethod_Test() {
+    WithAsyncMethod_Sso() {
       ::grpc::Service::MarkMethodAsync(2);
     }
-    ~WithAsyncMethod_Test() override {
+    ~WithAsyncMethod_Sso() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response) override {
+    ::grpc::Status Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestTest(::grpc::ServerContext* context, ::userinfo::TestRequest* request, ::grpc::ServerAsyncResponseWriter< ::userinfo::TestResponse>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestSso(::grpc::ServerContext* context, ::userinfo::SsoRequest* request, ::grpc::ServerAsyncWriter< ::userinfo::SsoResponse>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(2, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_Login<WithAsyncMethod_Register<WithAsyncMethod_Test<Service > > > AsyncService;
+  typedef WithAsyncMethod_Login<WithAsyncMethod_Register<WithAsyncMethod_Sso<Service > > > AsyncService;
   template <class BaseClass>
   class WithGenericMethod_Login : public BaseClass {
    private:
@@ -206,18 +214,18 @@ class UserAction final {
     }
   };
   template <class BaseClass>
-  class WithGenericMethod_Test : public BaseClass {
+  class WithGenericMethod_Sso : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithGenericMethod_Test() {
+    WithGenericMethod_Sso() {
       ::grpc::Service::MarkMethodGeneric(2);
     }
-    ~WithGenericMethod_Test() override {
+    ~WithGenericMethod_Sso() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response) override {
+    ::grpc::Status Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -263,23 +271,23 @@ class UserAction final {
     }
   };
   template <class BaseClass>
-  class WithRawMethod_Test : public BaseClass {
+  class WithRawMethod_Sso : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithRawMethod_Test() {
+    WithRawMethod_Sso() {
       ::grpc::Service::MarkMethodRaw(2);
     }
-    ~WithRawMethod_Test() override {
+    ~WithRawMethod_Sso() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable synchronous version of this method
-    ::grpc::Status Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response) override {
+    ::grpc::Status Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    void RequestTest(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
-      ::grpc::Service::RequestAsyncUnary(2, context, request, response, new_call_cq, notification_cq, tag);
+    void RequestSso(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(2, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -322,29 +330,29 @@ class UserAction final {
     // replace default version of method with streamed unary
     virtual ::grpc::Status StreamedRegister(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::userinfo::RegisterRequest,::userinfo::RegisterResponse>* server_unary_streamer) = 0;
   };
+  typedef WithStreamedUnaryMethod_Login<WithStreamedUnaryMethod_Register<Service > > StreamedUnaryService;
   template <class BaseClass>
-  class WithStreamedUnaryMethod_Test : public BaseClass {
+  class WithSplitStreamingMethod_Sso : public BaseClass {
    private:
     void BaseClassMustBeDerivedFromService(const Service *service) {}
    public:
-    WithStreamedUnaryMethod_Test() {
+    WithSplitStreamingMethod_Sso() {
       ::grpc::Service::MarkMethodStreamed(2,
-        new ::grpc::internal::StreamedUnaryHandler< ::userinfo::TestRequest, ::userinfo::TestResponse>(std::bind(&WithStreamedUnaryMethod_Test<BaseClass>::StreamedTest, this, std::placeholders::_1, std::placeholders::_2)));
+        new ::grpc::internal::SplitServerStreamingHandler< ::userinfo::SsoRequest, ::userinfo::SsoResponse>(std::bind(&WithSplitStreamingMethod_Sso<BaseClass>::StreamedSso, this, std::placeholders::_1, std::placeholders::_2)));
     }
-    ~WithStreamedUnaryMethod_Test() override {
+    ~WithSplitStreamingMethod_Sso() override {
       BaseClassMustBeDerivedFromService(this);
     }
     // disable regular version of this method
-    ::grpc::Status Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response) override {
+    ::grpc::Status Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
-    // replace default version of method with streamed unary
-    virtual ::grpc::Status StreamedTest(::grpc::ServerContext* context, ::grpc::ServerUnaryStreamer< ::userinfo::TestRequest,::userinfo::TestResponse>* server_unary_streamer) = 0;
+    // replace default version of method with split streamed
+    virtual ::grpc::Status StreamedSso(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::userinfo::SsoRequest,::userinfo::SsoResponse>* server_split_streamer) = 0;
   };
-  typedef WithStreamedUnaryMethod_Login<WithStreamedUnaryMethod_Register<WithStreamedUnaryMethod_Test<Service > > > StreamedUnaryService;
-  typedef Service SplitStreamedService;
-  typedef WithStreamedUnaryMethod_Login<WithStreamedUnaryMethod_Register<WithStreamedUnaryMethod_Test<Service > > > StreamedService;
+  typedef WithSplitStreamingMethod_Sso<Service > SplitStreamedService;
+  typedef WithStreamedUnaryMethod_Login<WithStreamedUnaryMethod_Register<WithSplitStreamingMethod_Sso<Service > > > StreamedService;
 };
 
 }  // namespace userinfo

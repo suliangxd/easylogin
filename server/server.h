@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <set>
 
 #include <grpcpp/grpcpp.h>
 
@@ -12,13 +13,15 @@
 using grpc::Server;
 using grpc::ServerBuilder;
 using grpc::ServerContext;
+using grpc::ServerReaderWriter;
+using grpc::ServerWriter;
 using grpc::Status;
 using userinfo::LoginRequest;
 using userinfo::LoginResponse;
 using userinfo::RegisterRequest;
 using userinfo::RegisterResponse;
-using userinfo::TestRequest;
-using userinfo::TestResponse;
+using userinfo::SsoRequest;
+using userinfo::SsoResponse;
 using userinfo::UserAction;
 using namespace easylogin::common;
 
@@ -35,11 +38,14 @@ private:
     Status Register(ServerContext* context, const RegisterRequest* request,
             RegisterResponse* response) override;
 
-    Status Test(ServerContext* context, const TestRequest* request,
-            TestResponse* response) override;
-    
+    Status Sso(ServerContext* context, const SsoRequest* request,
+            ServerWriter<SsoResponse>* writer) override;
+
     template<typename T>   
     void finish(ActionStatus status, T response);
+
+private:
+    std::set<std::string> invalidToken_;
 };
 
 }  // namespace server 

@@ -1,9 +1,10 @@
 #ifndef EASYLOGIN_CLIENT_CLIENT_H
 #define EASYLOGIN_CLIENT_CLIENT_H
 
-#include <grpcpp/grpcpp.h>
 #include <memory>
 #include <string>
+
+#include <grpcpp/grpcpp.h>
 
 #include "protocol/user_info.grpc.pb.h"
 
@@ -23,7 +24,7 @@ public:
 
     void Login();
     void Register();
-    void Test();
+    void Sso();
 private:
     std::unique_ptr<UserAction::Stub> stub_;
     std::string token_;

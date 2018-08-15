@@ -28,22 +28,21 @@ message RegisterResponse
     string token = 3;
 }
 
-message TestRequest
+message SsoRequest
 {
     string token = 1;
-    string test_string = 2;
 }
 
-message TestResponse
+message SsoResponse
 {
     int32 ret_code = 1;
     string ret_msg = 2;
-    string ret_str = 3;
 }
 
 service UserAction
 {
     rpc Login(LoginRequest) returns (LoginResponse) {}
     rpc Register(RegisterRequest) returns (RegisterResponse) {}
-    rpc Test(TestRequest) returns (TestResponse) {}
+    // rpc Test(TestRequest) returns (TestResponse) {}
+    rpc Sso(SsoRequest) returns (stream SsoResponse) {}
 }

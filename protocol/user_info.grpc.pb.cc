@@ -18,7 +18,7 @@ namespace userinfo {
 static const char* UserAction_method_names[] = {
   "/userinfo.UserAction/Login",
   "/userinfo.UserAction/Register",
-  "/userinfo.UserAction/Test",
+  "/userinfo.UserAction/Sso",
 };
 
 std::unique_ptr< UserAction::Stub> UserAction::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -30,7 +30,7 @@ std::unique_ptr< UserAction::Stub> UserAction::NewStub(const std::shared_ptr< ::
 UserAction::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
   : channel_(channel), rpcmethod_Login_(UserAction_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_Register_(UserAction_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_Test_(UserAction_method_names[2], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_Sso_(UserAction_method_names[2], ::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   {}
 
 ::grpc::Status UserAction::Stub::Login(::grpc::ClientContext* context, const ::userinfo::LoginRequest& request, ::userinfo::LoginResponse* response) {
@@ -57,16 +57,16 @@ UserAction::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel
   return ::grpc::internal::ClientAsyncResponseReaderFactory< ::userinfo::RegisterResponse>::Create(channel_.get(), cq, rpcmethod_Register_, context, request, false);
 }
 
-::grpc::Status UserAction::Stub::Test(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::userinfo::TestResponse* response) {
-  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_Test_, context, request, response);
+::grpc::ClientReader< ::userinfo::SsoResponse>* UserAction::Stub::SsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request) {
+  return ::grpc::internal::ClientReaderFactory< ::userinfo::SsoResponse>::Create(channel_.get(), rpcmethod_Sso_, context, request);
 }
 
-::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>* UserAction::Stub::AsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::userinfo::TestResponse>::Create(channel_.get(), cq, rpcmethod_Test_, context, request, true);
+::grpc::ClientAsyncReader< ::userinfo::SsoResponse>* UserAction::Stub::AsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::userinfo::SsoResponse>::Create(channel_.get(), cq, rpcmethod_Sso_, context, request, true, tag);
 }
 
-::grpc::ClientAsyncResponseReader< ::userinfo::TestResponse>* UserAction::Stub::PrepareAsyncTestRaw(::grpc::ClientContext* context, const ::userinfo::TestRequest& request, ::grpc::CompletionQueue* cq) {
-  return ::grpc::internal::ClientAsyncResponseReaderFactory< ::userinfo::TestResponse>::Create(channel_.get(), cq, rpcmethod_Test_, context, request, false);
+::grpc::ClientAsyncReader< ::userinfo::SsoResponse>* UserAction::Stub::PrepareAsyncSsoRaw(::grpc::ClientContext* context, const ::userinfo::SsoRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::userinfo::SsoResponse>::Create(channel_.get(), cq, rpcmethod_Sso_, context, request, false, nullptr);
 }
 
 UserAction::Service::Service() {
@@ -82,9 +82,9 @@ UserAction::Service::Service() {
           std::mem_fn(&UserAction::Service::Register), this)));
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       UserAction_method_names[2],
-      ::grpc::internal::RpcMethod::NORMAL_RPC,
-      new ::grpc::internal::RpcMethodHandler< UserAction::Service, ::userinfo::TestRequest, ::userinfo::TestResponse>(
-          std::mem_fn(&UserAction::Service::Test), this)));
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< UserAction::Service, ::userinfo::SsoRequest, ::userinfo::SsoResponse>(
+          std::mem_fn(&UserAction::Service::Sso), this)));
 }
 
 UserAction::Service::~Service() {
@@ -104,10 +104,10 @@ UserAction::Service::~Service() {
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
-::grpc::Status UserAction::Service::Test(::grpc::ServerContext* context, const ::userinfo::TestRequest* request, ::userinfo::TestResponse* response) {
+::grpc::Status UserAction::Service::Sso(::grpc::ServerContext* context, const ::userinfo::SsoRequest* request, ::grpc::ServerWriter< ::userinfo::SsoResponse>* writer) {
   (void) context;
   (void) request;
-  (void) response;
+  (void) writer;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 
