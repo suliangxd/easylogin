@@ -92,9 +92,6 @@ CREATE TABLE USERINFO(
 
 ## 安装构建
 
-+ grpc安装（参照官网）
-  https://grpc.io/docs/quickstart/cpp.html
-
 + install sqlite3, uuid_dev
 
 ```bash
