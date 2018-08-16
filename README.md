@@ -83,11 +83,6 @@ CREATE TABLE USERINFO(
   TOKEN CHAR(128) NOT NULL
   );
 ```
-## RoadMap
-### todo list
-- [ ] grpc调用使用SSL/TLS
-- [ ] 配置参数可使用gflag库，现在为了方便实现，直接定义为常量
-- [ ] 目前只有端到端的测试，和一些公共类库的简单测试，可以用gtest去加强ut覆盖
 
 
 ## 安装构建
@@ -106,7 +101,12 @@ cd ../server
 bazel build //server:server-bin
 ```
 
-+ 在protocol目录，client目录，server目录中输入make命令即可完成编译
+## RoadMap
+### todo list
+- [ ] grpc调用使用SSL/TLS
+- [ ] 配置参数可使用gflag库，现在为了方便实现，直接定义为常量
+- [ ] 目前只有端到端的测试，和一些公共类库的简单测试，可以用gtest去加强ut覆盖
+
 
 ## 运行截图
 
