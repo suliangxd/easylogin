@@ -4,9 +4,11 @@
 #include "common/sha256.h"
 #include "database/sqlite_wrapper.h"
 #include "server/server.h"
+#include "thirdparty/bcrypt/bcrypt_wrapper.h"
 
 using namespace easylogin::common;
 using namespace easylogin::database;
+using namespace easylogin::bcrypt;
 
 const static std::string HELLO = "Hello ";
 
@@ -36,14 +38,13 @@ Status ServiceImpl::Login(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    string salt;
     string password = request->password();
     string databasePassword;
     string databaseToken;
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
-    string sql = "SELECT PASSWORD,SALT,TOKEN FROM USERINFO WHERE USERNAME = ?";
+    string sql = "SELECT PASSWORD,TOKEN FROM USERINFO WHERE USERNAME = ?";
     SqliteStatement* stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))
     {
@@ -55,8 +56,7 @@ Status ServiceImpl::Login(ServerContext* context,
     if(stmt->NextRow())
     {
         databasePassword = stmt->ValueString(0);
-        salt = stmt->ValueString(1);
-        databaseToken = stmt->ValueString(2);
+        databaseToken = stmt->ValueString(1);
     }
     else
     {
@@ -66,9 +66,8 @@ Status ServiceImpl::Login(ServerContext* context,
         finish<LoginResponse*>(actionStatus, response);
         return Status::OK;
     }
-    password += salt;
-    password = hash256_hex_string(password);
-    if(password != databasePassword)
+    Bcrypt bcrypt;
+    if(!bcrypt.checkPassword(password, databasePassword))
     {
         ActionStatus actionStatus
             (ActionStatus::kIncorrectUsernameOrPassword);
@@ -124,12 +123,9 @@ Status ServiceImpl::Register(ServerContext* context,
         return Status::OK;
     }
     string username = request->username();
-    uuid_t uuidSalt;
-    uuid_generate(uuidSalt);
-    string salt = uuid_to_string(uuidSalt);
     string password = request->password();
-    password += salt;
-    password = hash256_hex_string(password);
+    Bcrypt bcrypt;
+    string hashPassword = bcrypt.generateHashPw(password);
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
@@ -149,8 +145,8 @@ Status ServiceImpl::Register(ServerContext* context,
         finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    sql = "INSERT INTO USERINFO(USERNAME, PASSWORD, SALT, TOKEN)"\
-           "VALUES(?,?,?,?)";
+    sql = "INSERT INTO USERINFO(USERNAME, PASSWORD,  TOKEN)"\
+           "VALUES(?,?,?)";
     stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))
     {
@@ -159,21 +155,14 @@ Status ServiceImpl::Register(ServerContext* context,
         finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    if(!stmt->Bind(1, password))
+    if(!stmt->Bind(1, hashPassword))
     {
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
         mySqlite.Close();
         finish<RegisterResponse*>(actionStatus, response);
         return Status::OK;
     }
-    if(!stmt->Bind(2, salt))
-    {
-        ActionStatus actionStatus(ActionStatus::kDatabaseError);
-        mySqlite.Close();
-        finish<RegisterResponse*>(actionStatus, response);
-        return Status::OK;
-    }
-    if(!stmt->Bind(3, token))
+    if(!stmt->Bind(2, token))
     {
         ActionStatus actionStatus(ActionStatus::kDatabaseError);
         mySqlite.Close();
