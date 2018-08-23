@@ -3,7 +3,7 @@ licenses(["notice"])
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-        name = "bcrypt",
+    name = "bcrypt",
     srcs = ["bcrypt.c",
             "crypt_blowfish.c",
             "crypt_gensalt.c",
