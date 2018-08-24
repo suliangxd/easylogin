@@ -88,12 +88,6 @@ CREATE TABLE USERINFO(
 
 ## 安装构建
 
-+ install sqlite3, uuid_dev
-
-```bash
-sudo apt-get install sqlite3
-sudo apt-get install uuid-dev
-```
 ##Bazel构建
 ``` c++  
 cd easylogin/server
