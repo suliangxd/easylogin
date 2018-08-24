@@ -7,7 +7,7 @@ cc_binary(
     ],
     deps = [":client",
         "//protocol:user_proto",
-        "@thirdparty_grpc//:grpc++",
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
 
@@ -15,13 +15,13 @@ cc_library(
     name = "client",
     srcs = ["client.cpp"],
     hdrs = ["client.h"],
-    cops = [
+    copts = [
         "-std=c++11",
         "-D_GLIBCXX_USE_CXX11_ABI=1",
     ],
     deps = [
         "//common:common",
         "//protocol:user_proto",
-        "@thirdparty_grpc//:grpc++",
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )

@@ -5,10 +5,11 @@ cc_binary(
         "-std=c++11",
         "-D_GLIBCXX_USE_CXX11_ABI=1",
     ],
+    linkopts = ["-ldl"],
     deps = [
         ":server",
         "//protocol:user_proto",
-        "@thirdparty_grpc//:grpc++",
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
 
@@ -22,11 +23,11 @@ cc_library(
     ],
     deps = [
         "//common:common",
-        "//database:sqlite_wrapper",
         "//protocol:user_proto",
-        "//third_party/bcrypt:bcrypt",
-        "//third_party/sqlite3:sqlite3",
-        "//third_party/uuid:uuid",
-        "@thirdparty_grpc//:grpc++",
+        "//database:sqlite_wrapper",
+        "//thirdparty/bcrypt:bcrypt",
+        "//thirdparty/sqlite3:sqlite3",
+        "//thirdparty/uuid:uuid",
+        "@com_github_grpc_grpc//:grpc++",
     ],
 )
