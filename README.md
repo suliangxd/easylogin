@@ -75,11 +75,12 @@
 盐 | SALT | CHAR(256)| NOT NULL  
 token | TOKEN | CHAR(256) | NOT NULL  
 
+**请注意将表建立在/tmp/test.db中！**
+
 ```sql
 CREATE TABLE USERINFO( 
   USERNAME CHAR(128) NOT NULL,
   PASSWORD CHAR(512) NOT NULL,
-  SALT CHAR(256) NOT NULL
   TOKEN CHAR(128) NOT NULL
   );
 ```
@@ -95,10 +96,13 @@ sudo apt-get install uuid-dev
 ```
 ##Bazel构建
 ``` c++  
+cd easylogin/server
+bazel build server-bin
+bazel run server-bin
+
 cd easylogin/client
-bazel build //client:client-bin
-cd ../server
-bazel build //server:server-bin
+bazel build client-bin
+bazel run client-bin
 ```
 
 ## RoadMap
