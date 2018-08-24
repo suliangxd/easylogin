@@ -72,7 +72,6 @@
 ---- | ---- | ---- | ---- 
 用户名 | USERNAME | CHAR(128) | NOT NULL  
 密码 | PASSWORD | CHAR(512) | NOT NULL  
-盐 | SALT | CHAR(256)| NOT NULL  
 token | TOKEN | CHAR(256) | NOT NULL  
 
 **请注意将表建立在/tmp/test.db中！**
