@@ -7,7 +7,7 @@
 ## 运行流程
 **注册**  
 
-![flowchart-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-4.png)
+![flowchart-1](https://github.com/xiaohan-orange/easylogin/blob/master/doc/timingdiagram-1.png)
 
 1：输入用户名和密码（两次）。  
 
@@ -15,7 +15,7 @@
 
 3：服务器在数据库中检测用户名是否已被注册，如果用户名已被注册，注册失败。  
 
-4：对加密后的密码进行加盐二次哈希。  
+4：客户端传来的密码进行加密。  
 
 5：将用户信息存入数据库。  
 
@@ -23,21 +23,21 @@
 
 **登录**  
 
-![flowchart-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-5.png)
+![flowchart-2](https://github.com/xiaohan-orange/easylogin/blob/master/doc/timingdiagram-2.png)
 
 1：输入用户名和密码。  
 
-2：服务器从数据库中取出盐值和加盐后的密码，对用户输入的密码进行加盐二次哈希。  
+2：服务器从数据库中取出密码和token值，对用户输入的密码进行加密。  
 
-3：判断加盐二次哈希之后的密码是否和数据库中的密码相同，如果不相同，登陆失败。  
+3：判断加密之后的密码是否和数据库中的密码相同，如果不相同，登陆失败。  
 
-4：生成新的token值，更新数据库中的登录信息。  
+4：生成新的token值，更新数据库中的登录信息，并将之前的密码置为无效。  
 
 5：登陆成功。
 
 **单点登录检测**  
 
-![flowchart-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/flowchart-6.png)
+![flowchart-3](https://github.com/xiaohan-orange/easylogin/blob/master/doc/timingdiagram-3.png)
 
 1：服务器查询已登录用户的token值是否失效。  
 
