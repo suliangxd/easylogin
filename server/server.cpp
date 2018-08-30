@@ -17,6 +17,19 @@ namespace easylogin
 namespace server
 {
 
+std::string ServiceImpl::getToken()
+{
+    static const char letter[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    char ans[65];
+    srand(time(0));
+    for(int i = 0; i < 64; ++i)
+    {
+        ans[i] = letter[rand() % 64];
+    }
+    ans[64] = '\0';
+    return std::string(ans);
+}
+
 template<typename T>
 void ServiceImpl::finish(ActionStatus status, T response)
 {
@@ -41,9 +54,12 @@ Status ServiceImpl::Login(ServerContext* context,
     string password = request->password();
     string databasePassword;
     string databaseToken;
+    string token = username + getToken();
+    /*
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
+    */
     string sql = "SELECT PASSWORD,TOKEN FROM USERINFO WHERE USERNAME = ?";
     SqliteStatement* stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))
@@ -126,9 +142,12 @@ Status ServiceImpl::Register(ServerContext* context,
     string password = request->password();
     Bcrypt bcrypt;
     string hashPassword = bcrypt.generateHashPw(password);
+    string token = username + getToken();
+    /*
     uuid_t uuid;
     uuid_generate(uuid);
     string token = uuid_to_string(uuid);
+    */
     string sql = "SELECT USERNAME FROM USERINFO WHERE USERNAME = ?";
     SqliteStatement* stmt = mySqlite.Statement(sql);
     if(!stmt->Bind(0, username))

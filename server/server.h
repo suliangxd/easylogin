@@ -1,6 +1,7 @@
 #ifndef EASYLOGIN_SERVER_SERVER_H
 #define EASYLOGIN_SERVER_SERVER_H
 
+#include <iostream>
 #include <memory>
 #include <string>
 #include <set>
@@ -43,6 +44,8 @@ private:
 
     template<typename T>   
     void finish(ActionStatus status, T response);
+
+    std::string getToken();
 
 private:
     std::set<std::string> invalidToken_;
