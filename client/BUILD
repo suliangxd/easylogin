@@ -2,8 +2,13 @@ cc_binary(
     name = "client-bin",
     srcs = ["main.cpp"],
     copts = [
+        "-pthread",
         "-std=c++11",
         "-D_GLIBCXX_USE_CXX11_ABI=1",
+    ],
+    linkopts = [
+        "-lpthread",
+        "-ldl"
     ],
     deps = [":client",
         "//protocol:user_proto",
@@ -16,9 +21,11 @@ cc_library(
     srcs = ["client.cpp"],
     hdrs = ["client.h"],
     copts = [
+        "-pthread",
         "-std=c++11",
         "-D_GLIBCXX_USE_CXX11_ABI=1",
     ],
+    linkopts = ["-ldl","-lpthread"],
     deps = [
         "//common:common",
         "//protocol:user_proto",
